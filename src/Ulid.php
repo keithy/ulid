@@ -98,7 +98,7 @@ class Ulid
         }
         return $base32;
     }
-    public static function sanitizeString(string $value)
+    public static function sanitizeString($value)
     {
         $value = str_replace(
             ['O', 'L', 'I'],
@@ -110,7 +110,7 @@ class Ulid
 
         return static::isStringAnUlid($value) ? $value : false;
     }
-    public static function fromString(string $value)
+    public static function fromString($value)
     {
 
         $timestamp = substr($value, 0, 10);
@@ -118,7 +118,7 @@ class Ulid
 
         return new static($timestamp, $payload);
     }
-    public static function isStringAnUlid(string $value)
+    public static function isStringAnUlid($value)
     {
         return (1 === preg_match("/^[0-7][0-9A-HJKMNP-Z]{25}$/", $value));
     }
