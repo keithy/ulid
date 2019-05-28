@@ -116,10 +116,10 @@ class Ulid
         $timestamp = substr($value, 0, 10);
         $payload = substr($value, 10);
 
-        return new static($timestamp, $payload);
+        return new static($timestamp, $payload, true);
     }
     public static function isStringAnUlid($value)
     {
-        return (1 === preg_match("/^[0-7][0-9A-HJKMNP-Z]{25}$/", $value));
+        return (1 === preg_match("/^[0-7][0-9A-HJKMNP-TV-Z]{25}$/", $value));
     }
 }

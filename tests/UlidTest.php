@@ -81,6 +81,8 @@ class UlidTest extends TestCase
         $this->assertTrue(Ulid::isStringAnUlid("0001ED71Z75QFJ3KF8PA13TXRF"));
         // strlen = 25
         $this->assertFalse(Ulid::isStringAnUlid("001ED71Z75QFJ3KF8PA13TXRF"));
+        // strlen = 27
+        $this->assertFalse(Ulid::isStringAnUlid("00001ED71Z75QFJ3KF8PA13TXRF"));
         // ^[0-7]
         $this->assertFalse(Ulid::isStringAnUlid("8001ED71Z75QFJ3KF8PA13TXRF"));
     }
@@ -97,8 +99,11 @@ class UlidTest extends TestCase
      */
     public function testShouldInstanciateUlidFromStringRepresentation($str)
     {
-        $ulid = Ulid::fromString($str);
-        $this->assertInstanceOf(Ulid::class, $ulid);
+        $ulid1 = Ulid::fromString($str);
+        $this->assertInstanceOf(Ulid::class, $ulid1);
+
+        $ulid2 = new Ulid($ulid1->timestamp(), $ulid1->payload());
+        $this->assertEquals($str, $ulid2->string());
     }
     public function testShouldSanitizeUlidString()
     {
