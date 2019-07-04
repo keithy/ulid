@@ -17,7 +17,6 @@ namespace Tuupola;
 
 class Ulid
 {
-
     const PAYLOAD_SIZE = 10;
     const PAYLOAD_ENCODED_SIZE = 16;
     const TIMESTAMP_SIZE = 6;
@@ -49,42 +48,51 @@ class Ulid
             $this->timestamp = time();
         }
     }
+
     public static function generate()
     {
         return new self;
     }
+
     public function string()
     {
         return $this->encodeTimeStamp() . $this->encodePayload();
     }
+
     private function encodePayload()
     {
 
         $encoded = static::crockford()->encode($this->payload);
         return \str_pad($encoded, self::PAYLOAD_ENCODED_SIZE, "0", STR_PAD_LEFT);
     }
+
     private function encodeTimeStamp()
     {
 
         $encoded = static::crockford()->encode($this->timestamp);
         return \str_pad($encoded, self::TIMESTAMP_ENCODED_SIZE, "0", STR_PAD_LEFT);
     }
+
     public function payload()
     {
         return $this->payload;
     }
+
     public function timestamp()
     {
         return $this->timestamp;
     }
+
     public function unixtime()
     {
         return $this->timestamp;
     }
+
     public function __toString()
     {
         return $this->string();
     }
+
     //"0123456789ABCDEFGHJKMNPQRSTVWXYZ"
     protected static function crockford()
     {
@@ -98,6 +106,7 @@ class Ulid
         }
         return $base32;
     }
+
     public static function sanitizeString($value)
     {
         $value = str_replace(
@@ -110,6 +119,7 @@ class Ulid
 
         return static::isStringAnUlid($value) ? $value : false;
     }
+
     public static function fromString($value)
     {
 
@@ -118,8 +128,22 @@ class Ulid
 
         return new static($timestamp, $payload, true);
     }
+
     public static function isStringAnUlid($value)
     {
         return (1 === preg_match("/^[0-7][0-9A-HJKMNP-TV-Z]{25}$/", $value));
+    }
+
+    public static function mustBeAnUlid($str, $strict = true)
+    {
+        if ($strict) {
+            $ok = static::isStringAnUlid($str);
+        } else {
+            $ok = static::sanitizeString($str);
+        }
+
+        if (!$ok) {
+            throw new MalformedUlid($str);
+        }
     }
 }
